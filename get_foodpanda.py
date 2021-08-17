@@ -196,6 +196,6 @@ async def on_message(message):
         for i in range(0,len(all_dished)) :
             embed.add_field(name=dish[all_dished[i][0]][1],value=all_dished[i][1],inline=False)
         await message.channel.send(embed=embed)
-        await message.channel.send('##clear')
+        await message.channel.send('##clear') 
 
 bot.run(os.getenv('TOKEN'))
