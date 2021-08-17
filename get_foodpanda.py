@@ -137,7 +137,6 @@ async def on_message(message):
 
                 if flag == False :
                     await message.channel.send(embed=em)
-             
         
     elif string.startswith('##buy') :
         string, a, b = string.split(' ')
@@ -162,15 +161,15 @@ async def on_message(message):
     elif string.startswith('##check') :
         user = message.author
         if user not in user_num or len(user_bought[user_num[user]])==0 :
-            await message.channel.send('您尚未購買任何餐點')
+            await message.channel.send('您尚未購買任何餐點 🍱')
             return 
         user = message.author
-        embed=dc.Embed(
-            title=f'{user} 累計{user_cost[user_num[user]]}元，已購買：'
+        embed = dc.Embed(
+            title = f'{user} 累計{user_cost[user_num[user]]}元，已購買：'
             )
         total = 1
         for i in user_bought[user_num[user]] :
-            embed.add_field(name=f'{total}: {dish[i[0]][1]}, 價格：{dish[i[0]][0]}', value=i[1], inline=False)
+            embed.add_field(name=f'{total}：{dish[i[0]][1]}, 價格：{dish[i[0]][0]}', value=i[1], inline=False)
             total += 1
         await message.channel.send(embed=embed)
     
@@ -179,12 +178,12 @@ async def on_message(message):
         string,a = string.split(' ')
         a = int(a)
         if a>len([user_bought[user_num[user]]]) or a<=0 :
-            await message.channel.send('這選項...你是要我怎樣')
+            await message.channel.send('這選項...你是要我怎樣 🤬 🤬 🤬 🤬 🤬 🤬')
             return 
-        user_cost[user_num[user]]-=dish[user_bought[user_num[user]][a-1][0]][0]
+        user_cost[user_num[user]] -= dish[user_bought[user_num[user]][a-1][0]][0]
         all_cost -= dish[user_bought[user_num[user]][a-1][0]][0]
         del user_bought[user_num[user]][a-1]
 
-        await message.channel.send('移除品項&瘦身成功')
+        await message.channel.send('移除品項 & 瘦身成功')
 
 bot.run(os.getenv('TOKEN'))
