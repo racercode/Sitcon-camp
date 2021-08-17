@@ -36,7 +36,8 @@ user_num = {} # dictionary, 代表每個人的編號, 用法：user_num[message.
 user_bought = [] # 二維陣列，每個人買了什麼東西，用法：user_bought[user_num[message.author]] -> 這是一個單維陣列，元素皆為tuple(餐點代碼,註解)
 user_cost = [] # 一維陣列，每個人總共花的錢，用法：user_cost[user_num[message.author]] -> 錢錢
 dish = [] # 一維陣列，利用餐點代碼存取，裡面的元素都是tuple(價格,名稱)
-
+all_dished=[]
+all_cost=0
 
 
 used = False
@@ -45,7 +46,7 @@ keyword = ''
 user = ''
 @bot.event
 async def on_message(message):
-    global used, entered, keyword, tot, user_tot, user_num, user_bought, user_cost, dish
+    global dish, used, entered, keyword, tot, user_tot, user_num, user_bought, user_cost, all_dished,all_cost
     string = message.content
     if string.startswith('##init') :
         string,a = string.split(' ')
@@ -61,9 +62,9 @@ async def on_message(message):
     elif string.startswith('##clear') :
         used = False
         keyword = ''
-        tot = user_tot = all_sost = user_cost = 0
+        tot = user_tot = all_cost = 0
         user_num = {}
-        user_bought = all_dished = dish = []
+        user_bought = all_dished = dish = user_cost = []
         await message.channel.send('查詢資料清除成功')
     elif string.startswith('##search') :
         
@@ -154,7 +155,7 @@ async def on_message(message):
             user_cost.append(dish[int(a)-1][0])
             user_bought.append([tup])
         await message.channel.send(f'成功購買 !')
-        if user_bought[user_num[user]]%3==0 :
+        if len(user_bought[user_num[user]])%3==0 :
             await message.channel.send('讓我想想...你應該是肥宅...')
         all_cost += dish[int(a)-1][0]
 
@@ -177,7 +178,7 @@ async def on_message(message):
         user = message.author
         string,a = string.split(' ')
         a = int(a)
-        if a>len([user_bought[user_num[user]]]) or a<=0 :
+        if a>len(user_bought[user_num[user]]) or a<=0 :
             await message.channel.send('這選項...你是要我怎樣 🤬 🤬 🤬 🤬 🤬 🤬')
             return 
         user_cost[user_num[user]] -= dish[user_bought[user_num[user]][a-1][0]][0]
@@ -196,6 +197,21 @@ async def on_message(message):
         for i in range(0,len(all_dished)) :
             embed.add_field(name=dish[all_dished[i][0]][1],value=all_dished[i][1],inline=False)
         await message.channel.send(embed=embed)
-        await message.channel.send('##clear') 
+        await message.channel.send('##clear')
+
+    elif string.startswith('##end') :
+
+
+        for i in user_num :
+            for j in user_bought[user_num[i]]:
+                all_dished.append(j)
+        all_dished.sort()
+        embed=dc.Embed(
+            title=f'總價格：{all_cost}元'
+        )
+        for i in range(0,len(all_dished)) :
+            embed.add_field(name=dish[all_dished[i][0]][1],value=all_dished[i][1],inline=False)
+        await message.channel.send(embed=embed)
+        await message.channel.send('##clear')
 
 bot.run(os.getenv('TOKEN'))
