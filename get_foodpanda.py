@@ -186,5 +186,17 @@ async def on_message(message):
         del user_bought[user_num[user]][a-1]
 
         await message.channel.send('移除品項&瘦身成功')
+    elif string.startswith('##end') :
+        for i in user_num :
+            for j in user_bought[user_num[i]]:
+                all_dished.append(j)
+        all_dished.sort()
+        embed=dc.Embed(
+            title=f'總價格：{all_cost}元'
+        )
+        for i in range(0,len(all_dished)) :
+            embed.add_field(name=dish[all_dished[i][0]][1],value=all_dished[i][1],inline=False)
+        await message.channel.send(embed=embed)
+        await message.channel.send('##clear')
 
 bot.run(os.getenv('TOKEN'))
